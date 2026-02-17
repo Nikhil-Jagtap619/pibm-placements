@@ -8,7 +8,7 @@
     <style>
         body { -webkit-user-select: none; -moz-user-select: none; user-select: none; overflow: hidden; }
         .blurred { filter: blur(25px); pointer-events: none; }
-        .sidebar-item.active { background-color: #2563eb; color: white; }
+        .sidebar-item.active { background-color: #2563eb; color: white; border-color: #2563eb; }
         #protected-ui { display: none; }
     </style>
 </head>
@@ -17,7 +17,7 @@
     <div id="login-screen" class="min-h-screen flex items-center justify-center bg-slate-900 p-4">
         <div class="bg-white p-10 rounded-2xl shadow-2xl w-full max-w-md text-center">
             <div class="text-blue-600 font-bold text-3xl mb-2">KnowYourPlacement</div>
-            <h1 class="text-xl font-semibold text-gray-800 mb-6">Placement Verification</h1>
+            <h1 class="text-xl font-semibold text-gray-800 mb-6">Verification Required</h1>
             <p class="text-gray-500 mb-8">Access is restricted to students with a valid <b>@pibm.in</b> email address.</p>
             <button id="btn-login" class="flex items-center justify-center gap-3 w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-50 transition font-medium">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20">
@@ -28,66 +28,18 @@
 
     <div id="protected-ui" class="h-screen flex flex-col">
         <header class="bg-white border-b px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-2">
-                <span class="font-bold text-xl text-blue-600">PIBM</span>
-                <span class="text-gray-400">|</span>
-                <span class="text-gray-600 font-medium">Placement Drive 2026</span>
-            </div>
-            <div class="flex items-center gap-4">
-                <span id="user-email" class="text-sm text-gray-500 italic"></span>
-                <button id="btn-logout" class="bg-red-50 text-red-600 px-4 py-1.5 rounded-md text-sm font-semibold hover:bg-red-100 transition">Logout</button>
-            </div>
+            <div class="font-bold text-xl text-blue-600">Placement Drive 2026</div>
+            <button id="btn-logout" class="text-red-600 text-sm font-semibold hover:underline">Logout</button>
         </header>
 
         <div class="flex flex-1 overflow-hidden">
             <nav class="w-1/3 md:w-1/4 bg-white border-r overflow-y-auto p-4 space-y-2" id="company-list">
-                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 px-2">Available Roles</h3>
-                
-                <div class="sidebar-item active p-4 rounded-xl cursor-pointer transition border" onclick="showJob('job-1', this)">
-                    <p class="font-bold">XploreFlow</p>
-                    <p class="text-xs opacity-80 uppercase">AI Automation Engineer</p>
-                </div>
-
-                <div class="sidebar-item p-4 rounded-xl cursor-pointer transition border text-gray-600 hover:bg-gray-50" onclick="showJob('job-2', this)">
-                    <p class="font-bold">XploreFlow</p>
-                    <p class="text-xs uppercase">Integration Developer</p>
-                </div>
-
-                <div class="sidebar-item p-4 rounded-xl cursor-pointer transition border text-gray-600 hover:bg-gray-50" onclick="showJob('job-3', this)">
-                    <p class="font-bold">XploreFlow</p>
-                    <p class="text-xs uppercase">Analytics Engineer</p>
-                </div>
+                <p class="text-gray-400 text-xs font-bold uppercase p-2">Loading jobs...</p>
             </nav>
 
             <main class="flex-1 bg-white overflow-y-auto p-8 md:p-12" id="job-display">
-                <div id="job-1" class="job-detail space-y-6">
-                    <h2 class="text-3xl font-bold text-gray-900">AI Automation Engineer</h2>
-                    <div class="flex gap-4 text-sm text-blue-600 font-semibold">
-                        <span>Full-Time</span> <span>•</span> <span>Remote/Hybrid</span>
-                    </div>
-                    <hr>
-                    <div>
-                        <h4 class="font-bold text-lg mb-2">Role Overview</h4>
-                        <p class="text-gray-700 leading-relaxed">Focus on building autonomous workflows using LangChain, LangGraph, and integrating LLMs (OpenAI/Claude) into business processes.</p>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-lg mb-2">Requirements</h4>
-                        <ul class="list-disc ml-5 space-y-1 text-gray-700">
-                            <li>Certification in Workato or Boomi.</li>
-                            <li>Strong proficiency in SQL and REST/SOAP APIs.</li>
-                            <li>Experience with AI orchestration frameworks.</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div id="job-2" class="job-detail hidden space-y-6">
-                    <h2 class="text-3xl font-bold text-gray-900">Integration Developer</h2>
-                    <p class="text-gray-700">Detailed JD for Integration Developer goes here...</p>
-                </div>
-
-                <div id="job-3" class="job-detail hidden space-y-6">
-                    <h2 class="text-3xl font-bold text-gray-900">Analytics Engineer</h2>
-                    <p class="text-gray-700">Detailed JD for Analytics Engineer goes here...</p>
+                <div class="text-center text-gray-400 mt-20">
+                    <p>Select a company from the left to view details.</p>
                 </div>
             </main>
         </div>
@@ -96,8 +48,9 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // --- STEP 1: PASTE YOUR FIREBASE CONFIG HERE ---
+        // --- PASTE YOUR CONFIG HERE ---
         const firebaseConfig = {
             apiKey: "AIzaSyD69PnIcAaNC-MVHAR9iaWwNvrxyMLfCys",
             authDomain: "know-your-placement.firebaseapp.com",
@@ -109,14 +62,15 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth();
+        const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
 
-        // UI Elements
         const loginScreen = document.getElementById('login-screen');
         const protectedUI = document.getElementById('protected-ui');
-        const userEmailSpan = document.getElementById('user-email');
+        const companyList = document.getElementById('company-list');
+        const jobDisplay = document.getElementById('job-display');
 
-        // --- STEP 2: AUTH LOGIC ---
+        // Authentication logic
         document.getElementById('btn-login').onclick = () => signInWithPopup(auth, provider);
         document.getElementById('btn-logout').onclick = () => signOut(auth);
 
@@ -124,9 +78,9 @@
             if (user && user.email.endsWith('@pibm.in')) {
                 loginScreen.classList.add('hidden');
                 protectedUI.style.display = 'flex';
-                userEmailSpan.innerText = user.email;
+                loadJobs(); // Fetch from Firestore
             } else if (user) {
-                alert("Access Denied: Only @pibm.in IDs are allowed.");
+                alert("Access Denied: Use @pibm.in ID");
                 signOut(auth);
             } else {
                 loginScreen.classList.remove('hidden');
@@ -134,35 +88,49 @@
             }
         });
 
-        // --- STEP 3: SCREENSHOT PROTECTION ---
+        // Firestore Logic: Load jobs in real-time
+        function loadJobs() {
+            onSnapshot(collection(db, "placements"), (snapshot) => {
+                companyList.innerHTML = '<p class="text-gray-400 text-xs font-bold uppercase p-2">Available Jobs</p>';
+                
+                snapshot.forEach((doc) => {
+                    const job = doc.data();
+                    const jobId = doc.id;
+
+                    const btn = document.createElement('div');
+                    btn.className = "sidebar-item p-4 rounded-xl cursor-pointer transition border text-gray-600 hover:bg-gray-50 mb-2";
+                    btn.innerHTML = `<p class="font-bold">${job.company}</p><p class="text-xs uppercase">${job.role}</p>`;
+                    btn.onclick = () => {
+                        // Update active state
+                        document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+                        btn.classList.add('active');
+                        // Show details
+                        jobDisplay.innerHTML = `
+                            <div class="animate-fade-in space-y-6">
+                                <h2 class="text-3xl font-bold text-gray-900">${job.role}</h2>
+                                <p class="text-blue-600 font-semibold text-lg">${job.company}</p>
+                                <hr>
+                                <div class="text-gray-700 leading-relaxed whitespace-pre-wrap">${job.details}</div>
+                            </div>
+                        `;
+                    };
+                    companyList.appendChild(btn);
+                });
+            });
+        }
+
+        // Security Deterrents
         window.onblur = () => document.body.classList.add('blurred');
         window.onfocus = () => document.body.classList.remove('blurred');
-
         document.addEventListener('keydown', e => {
-            if (e.ctrlKey && (e.key === 'p' || e.key === 's' || e.key === 'u' || (e.shiftKey && e.key === 'S'))) {
+            if (e.ctrlKey && (e.key === 'p' || e.key === 's' || e.key === 'u')) {
                 e.preventDefault();
-                alert("Restricted for security.");
+                alert("Restricted.");
             }
         });
     </script>
-
-    <script>
-        // Tab switching logic
-        function showJob(jobId, element) {
-            // Hide all job details
-            document.querySelectorAll('.job-detail').forEach(detail => detail.classList.add('hidden'));
-            // Show selected job
-            document.getElementById(jobId).classList.remove('hidden');
-            // Update sidebar UI
-            document.querySelectorAll('.sidebar-item').forEach(item => {
-                item.classList.remove('active', 'bg-blue-600', 'text-white');
-                item.classList.add('text-gray-600');
-            });
-            element.classList.add('active', 'bg-blue-600', 'text-white');
-            element.classList.remove('text-gray-600');
-        }
-    </script>
 </body>
-
 </html>
+
+
 
