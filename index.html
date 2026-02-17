@@ -69,7 +69,6 @@
         const protectedUI = document.getElementById('protected-ui');
         const companyList = document.getElementById('company-list');
         const jobDisplay = document.getElementById('job-display');
-        const userEmailSpan = document.getElementById('user-email');
 
         // Authentication logic
         document.getElementById('btn-login').onclick = () => signInWithPopup(auth, provider);
@@ -79,7 +78,6 @@
             if (user && user.email.endsWith('@pibm.in')) {
                 loginScreen.classList.add('hidden');
                 protectedUI.style.display = 'flex';
-                userEmailSpan.innerText = user.email;
                 loadJobs(); // Fetch from Firestore
             } else if (user) {
                 alert("Access Denied: Use @pibm.in ID");
@@ -133,6 +131,7 @@
     </script>
 </body>
 </html>
+
 
 
 
