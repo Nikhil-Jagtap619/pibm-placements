@@ -78,6 +78,7 @@
             if (user && user.email.endsWith('@pibm.in')) {
                 loginScreen.classList.add('hidden');
                 protectedUI.style.display = 'flex';
+                userEmailSpan.innerText = user.email;
                 loadJobs(); // Fetch from Firestore
             } else if (user) {
                 alert("Access Denied: Use @pibm.in ID");
@@ -131,6 +132,7 @@
     </script>
 </body>
 </html>
+
 
 
 
