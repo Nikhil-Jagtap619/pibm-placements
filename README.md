@@ -2,7 +2,7 @@
 
 A secure, authenticated web portal developed for the **PIBM** student community. This application serves as a restricted repository for sensitive job descriptions, ensuring that placement data remains within the institutional ecosystem.
 
-## 🚀 [Live Demo Link]
+## 🚀 [https://nikhil-jagtap619.github.io/pibm-placements/]
 
 ## 💡 The Problem
 PIBM campus Job Descriptions are always a pain in a$$ and unorganised.
