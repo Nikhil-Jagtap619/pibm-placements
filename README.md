@@ -5,7 +5,8 @@ A secure, authenticated web portal developed for the **PIBM** student community.
 ## 🚀 [Live Demo Link]
 
 ## 💡 The Problem
-Institutional placement Job Description is unorganised.
+PIBM campus Job Descriptions are always a pain in a$$ and unorganised.
+This portal helps pibm students to understand what companies have been through campus and what they seek, therefore the juniors can be prepared for their desired Role|Comapany.
 
 ## 🛠️ The Solution (Tech Stack)
 - **Frontend:** HTML5, Tailwind CSS, JavaScript (ES6+).
